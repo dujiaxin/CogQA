@@ -25,7 +25,7 @@ def fuzzy_retrieve(entity, pool, setting, threshold = 50):
     else:
         if not hasattr(fuzzy_retrieve, 'db'):
             from redis import StrictRedis
-            fuzzy_retrieve.db = StrictRedis(host='localhost', port=6379, db=0)
+            fuzzy_retrieve.db = StrictRedis(host='localhost', port=6378, db=0)
         assert isinstance(pool, tuple)
         title, sen_num = pool
         pool = set()
@@ -53,7 +53,7 @@ def get_context_fullwiki(title):
     """
     if not hasattr(get_context_fullwiki, 'db'):
         from redis import StrictRedis
-        get_context_fullwiki.db = StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+        get_context_fullwiki.db = StrictRedis(host='localhost', port=6378, db=0, decode_responses=True)
     return get_context_fullwiki.db.lrange(title, 0, -1)
 
 def dp(a, b):
@@ -168,7 +168,8 @@ GENERAL_WD = ['is', 'are', 'am', 'was', 'were', 'have', 'has', 'had', 'can', 'co
 GENERAL_WD += [x.capitalize() for x in GENERAL_WD]
 GENERAL_WD = re.compile(' |'.join(GENERAL_WD))
 
-def judge_question_type(q : str, G = GENERAL_WD) -> int:
+def judge_question_type(q, G = GENERAL_WD) -> int:
+    q = str(q)
     if q.find(' or ') >= 0:
         return 2 
     elif G.match(q):

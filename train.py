@@ -126,7 +126,7 @@ def main(output_model_file = './models/bert-base-uncased.bin', load = False, mod
     
     BERT_MODEL = 'bert-base-uncased' # bert-large is too large for ordinary GPU on task #2
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL, do_lower_case=True)
-    with open('./hotpot_train_v1.1_refined.json' ,'r') as fin:
+    with open('./examples/hotpot_train_v1.1_500_refined.example.json' ,'r') as fin:
         dataset = json.load(fin)
     bundles = []
     for data in tqdm(dataset):

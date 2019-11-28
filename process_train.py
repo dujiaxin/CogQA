@@ -12,10 +12,10 @@ from redis import StrictRedis
 from utils import fuzzy_find
 
 
-db = StrictRedis(host='localhost', port=6379, db=0)
+db = StrictRedis(host='localhost', port=6378, db=0)
 
 
-with open('./hotpot_train_v1.1.json', 'r') as fin:
+with open('./examples/hotpot_train_v1.1_500_refined.example.json', 'r') as fin:
     train_set = json.load(fin)
 print('Finish Reading! len = ', len(train_set))
 
@@ -68,14 +68,22 @@ def find_fact_content(bundle, title, sen_num):
     for x in bundle['context']:
         if x[0] == title:
             return x[1][sen_num]
+
 test = copy.deepcopy(train_set)
+
 for bundle in tqdm(test):
-    entities = set([title for title, sen_num in bundle['supporting_facts']])
+
+    #print(bundle['supporting_facts'])
+
+    #entities = set([title for title, sen_num in bundle['supporting_facts']])
+    entities = set(fact[0] for fact in bundle['supporting_facts'])
     bundle['Q_edge'] = fuzzy_find(entities, bundle['question'])
     question_type = judge_question_type(bundle['question'])
     for fact in bundle['supporting_facts']:
         try:
-            title, sen_num = fact
+            #title, sen_num = fact
+            title = fact[0]
+            sen_num = fact[1]
             pool = set()
             for i in range(sen_num + 1):
                 name = 'edges:###{}###{}'.format(i, title)
